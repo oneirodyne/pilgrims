@@ -28,3 +28,7 @@ Every base command takes one action.
 * trad : Removes a fixed value of 25 Resources, adds a fixed value of 50 Food and 12 Relations.
 
 # Code Documentation
+
+## Compilation
+
+To compile, change directory into the pilgrims folder, then run make.sh. This expects you to have GCC, but you can change it to something else if you'd like.

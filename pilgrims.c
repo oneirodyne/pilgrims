@@ -201,7 +201,7 @@ void actionloop(){
 		pop -= loss;
 		piety -= loss/2;
 		actions--;
-		printf("\nYou mine and smith tools, %d died in the mines... But you gained 10 resource.\n\n",loss,resource);
+		printf("\nYou mine and smith tools, %d died in the mines... But you gained 10 resource.\n\n",loss);
 		}else if(strcmp(buff,"trib\0") == 0){
 		tribeloop();
 		actions--;

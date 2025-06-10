@@ -108,18 +108,27 @@ void dayloop(){
 
 		if(randomevent == 10 && pop < 300){
 			
-			if(relations < 35){
-			kills = rand()/(RAND_MAX/50)+1;
-			pop -= kills;
-			food -= 30;
-		
-			printf("A native american warband sieged our town, They ravished 30 of our food, leaving %d, and killed %d of our people\n\n",food,kills);
-			}else if(relations > 75){
-			food += 30;
+			// Warband Event
 
-			printf("A native american gift party graced our town, they gave us 30 food. Thank the Lord.\n\n");
-			}else{
-			printf("We saw a native american scouting party\n\n");
+			if(relations < 35){
+				kills = rand()/(RAND_MAX/50)+1;
+				pop -= kills;
+				food -= 30;
+		
+				printf("A native american warband sieged our town, They ravished 30 of our food, leaving %d, and killed %d of our people\n\n",food,kills);
+			}
+			// Gift Party event
+			
+			else if(relations > 75){
+				food += 30;
+				
+				printf("A native american gift party graced our town, they gave us 30 food. Thank the Lord.\n\n");
+			}
+
+			// Scouting Party event
+			
+			else{
+				printf("We saw a native american scouting party\n\n");
 			}
 		}
 
@@ -174,41 +183,61 @@ void actionloop(){
 		fgets(buff,6,stdin);
 		buff[strlen(buff)-1] = '\0';
 		
+		// The 'end' command, It sets actions to zero, thus ending the round!
 
 		if(strcmp(buff, "end\0") == 0){
-		actions = 0;
-		printf("\nEnding turn...\n\n");
-		}else if(strcmp(buff,"exit\0") == 0){
-		printf("\nEnding game...\n\n");
-		actions = 0;
-		gameover = 3;	
-		}else if(strcmp(buff,"pray\0") == 0){
-		piety += 5;
-		actions--;
-		printf("\nYou pray to the lord, for in trying times, that is all you can do... Gained 5 piety, your piety is now %d\n\n",piety);
-		}else if(strcmp(buff,"farm\0") == 0){
-		if(resource > 5){
-		resource -= 5;
-		food = food + pop/5;
-		actions--;
-		printf("\nYou order your colonists to farm, you lose 5 resources, but your foodstocks are now at %d\n\n", food);
-		}else{
-		printf("\nYou do not have the resources to farm...\n\n");
+			actions = 0;
+			printf("\nEnding turn...\n\n");
 		}
-		}else if(strcmp(buff,"prod\0") == 0){
-		loss = rand()/(RAND_MAX/10)+1;
-		resource += 10;
-		pop -= loss;
-		piety -= loss/2;
-		actions--;
-		printf("\nYou mine and smith tools, %d died in the mines... But you gained 10 resource.\n\n",loss);
-		}else if(strcmp(buff,"trib\0") == 0){
-		tribeloop();
-		actions--;
-		}
+		// The 'exit' command, just like the end command, it sets actions to zero, but it also sets the
+		// gameover tag, which will exit the script come the endloop()
 		
+		else if(strcmp(buff,"exit\0") == 0){
+			printf("\nEnding game...\n\n");
+			actions = 0;
+			gameover = 3;	
+		}
+		// The 'pray' command. It adds 5 piety, and post-decrements your actions.
+		
+		else if(strcmp(buff,"pray\0") == 0){
+			piety += 5;
+			actions--;
+			printf("\nYou pray to the lord, for in trying times, that is all you can do... Gained 5 piety, your piety is now %d\n\n",piety);
+		}
+		// The 'farm' command. It takes five resources, and adds 1 fifth of your population into your
+		// food, then post-decrements your actions. If you dont have any resources, the command fails,
+		// and you dont lose any actions.
+		
+		else if(strcmp(buff,"farm\0") == 0){
+			if(resource > 5){
+				resource -= 5;
+				food = food + pop/5;
+				actions--;
+				printf("\nYou order your colonists to farm, you lose 5 resources, but your foodstocks are now at %d\n\n", food);
+			}else{
+			printf("\nYou do not have the resources to farm...\n\n");
+			}
+		}
+		// The 'prod' command. It kills 1-10 people, and adds 10 into your resources. 
+		
+		else if(strcmp(buff,"prod\0") == 0){
+			loss = rand()/(RAND_MAX/10)+1;
+			resource += 10;
+			pop -= loss;
+			piety -= loss/2;
+			actions--;
+			printf("\nYou mine and smith tools, %d died in the mines... But you gained 10 resource.\n\n",loss);
+		}
+		// The 'trib' command. It enters the tribeloop(), which allows you to do tribal diplomacy.
+		
+		else if(strcmp(buff,"trib\0") == 0){
+			tribeloop();
+			actions--;
+		}
+		// This fires whenever your command does not match any of the included strings.
+
 		else{
-		printf("Invalid Command\n");
+			printf("Invalid Command\n");
 		}
 
 	}
@@ -274,6 +303,8 @@ void tribeloop(){
 	
 	fgets(buff,6,stdin);
 	buff[strlen(buff)-1] = '\0';
+	
+	// The 'pros' command, it gives you 10 piety for -5 relations.
 
 	if(strcmp(buff, "pros\0") == 0){
 		
@@ -283,7 +314,10 @@ void tribeloop(){
 
 		printf("\nYou prostelytize to the natives, losing 5 relations but gaining 10 piety.\n\n");
 
-	} else if(strcmp(buff, "exto\0") == 0){
+	} 
+	// The 'exto' command, it gives you 25 resources for -20 relations and piety.
+	
+	else if(strcmp(buff, "exto\0") == 0){
 	
 		resource += 25;
 		relations -= 20;
@@ -291,7 +325,10 @@ void tribeloop(){
 
 		printf("\nYou extort the natives, losing 25 relations and 10 piety, and gaining 25 resource\n\n");
 
-	} else if(strcmp(buff, "trad\0") == 0){
+	} 
+	// The 'trad' command, it takes 25 resources, and gives you 50 food and 12 relations.
+	
+	else if(strcmp(buff, "trad\0") == 0){
 
 		resource -= 25;
 		food += 50;
